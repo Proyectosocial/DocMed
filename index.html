@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <title>DocMed V6</title>
+  <style>
+    :root{
+      --bg:#f4f8f8;
+      --card:#ffffff;
+      --primary:#0f766e;
+      --primary-2:#115e59;
+      --text:#17313a;
+      --muted:#64748b;
+      --danger:#b91c1c;
+      --warning:#b45309;
+      --ok:#166534;
+      --border:#dbe7e7;
+      --shadow:0 10px 30px rgba(15,118,110,.10);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#eaf7f5 0%,var(--bg) 35%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    .app{
+      width:min(100%,780px);
+      margin:0 auto;
+      padding:14px 14px 92px;
+    }
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      padding:10px 0 14px;
+      background:linear-gradient(180deg,rgba(234,247,245,.98),rgba(234,247,245,.90),rgba(234,247,245,0));
+      backdrop-filter:blur(8px);
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:16px;
+      display:grid;place-items:center;
+      background:var(--primary);color:#fff;
+      font-size:25px;box-shadow:var(--shadow);
+    }
+    h1{font-size:1.25rem;margin:0}
+    .subtitle{margin:3px 0 0;color:var(--muted);font-size:.86rem}
+    .notice{
+      background:#fff7ed;
+      color:#7c2d12;
+      border:1px solid #fed7aa;
+      padding:12px 14px;
+      border-radius:14px;
+      font-size:.88rem;
+      margin:10px 0 16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-bottom:16px;
+    }
+    .mode-btn{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:16px;
+      padding:14px 8px;
+      min-height:84px;
+      cursor:pointer;
+      box-shadow:0 4px 14px rgba(15,118,110,.06);
+      color:var(--text);
+      font-weight:700;
+    }
+    .mode-btn span{display:block;font-size:1.4rem;margin-bottom:5px}
+    .mode-btn.active{
+      background:var(--primary);
+      color:white;
+      border-color:var(--primary);
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-bottom:16px;
+    }
+    label{font-weight:700;font-size:.92rem}
+    input,select{
+      width:100%;
+      margin-top:8px;
+      padding:13px 14px;
+      border:1px solid #cbd5e1;
+      border-radius:13px;
+      font-size:1rem;
+      outline:none;
+      background:#fff;
+      color:var(--text);
+    }
+    input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,118,110,.10)}
+    .hint{font-size:.82rem;color:var(--muted);margin-top:8px}
+    .results{display:grid;gap:12px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:0 6px 18px rgba(15,118,110,.07);
+      overflow:hidden;
+    }
+    .card-head{
+      padding:15px 16px;
+      background:#f8fbfb;
+      border-bottom:1px solid var(--border);
+    }
+    .cat{font-size:.76rem;color:var(--primary);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+    .drug{font-size:1.1rem;font-weight:800;margin-top:3px}
+    .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+    .badge{font-size:.72rem;padding:5px 8px;border-radius:999px;font-weight:700;background:#eef6f5;color:var(--primary-2)}
+    .badge.rx{background:#fef2f2;color:#991b1b}
+    .badge.otc{background:#f0fdf4;color:#166534}
+    .card-body{padding:15px 16px}
+    .section{margin-bottom:13px}
+    .section:last-child{margin-bottom:0}
+    .section strong{display:block;font-size:.83rem;margin-bottom:4px;color:#0f3f3a}
+    .section p{margin:0;line-height:1.5;font-size:.92rem}
+    .section ul{margin:5px 0 0 18px;padding:0}
+    .section li{margin:4px 0;font-size:.9rem;line-height:1.42}
+    .risk{color:var(--danger)}
+    .alarm{
+      border-left:4px solid var(--danger);
+      background:#fff1f2;
+      padding:11px 12px;
+      border-radius:10px;
+      font-size:.86rem;
+      margin-top:12px;
+    }
+    .category-list{display:grid;gap:10px}
+    .category-card{
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:15px;
+      background:#fbfefe;
+      cursor:pointer;
+    }
+    .category-card b{display:block;margin-bottom:4px}
+    .empty{
+      text-align:center;color:var(--muted);
+      padding:24px 10px;
+    }
+    footer{
+      margin-top:22px;
+      padding:15px;
+      border-radius:15px;
+      background:#0f172a;
+      color:#e2e8f0;
+      font-size:.8rem;
+      line-height:1.5;
+    }
+    .bottom-nav{
+      position:fixed;
+      left:50%; transform:translateX(-50%);
+      bottom:0;
+      width:min(100%,780px);
+      background:rgba(255,255,255,.97);
+      border-top:1px solid var(--border);
+      display:grid;grid-template-columns:repeat(3,1fr);
+      z-index:30;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+      backdrop-filter:blur(12px);
+    }
+    .navbtn{
+      background:none;border:0;padding:8px 4px;color:var(--muted);font-size:.78rem;cursor:pointer;
+    }
+    .navbtn b{display:block;font-size:1.2rem;margin-bottom:2px}
+    .navbtn.active{color:var(--primary);font-weight:800}
+    .hidden{display:none!important}
+    .meta{
+      font-size:.8rem;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .toolbar{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin:8px 0 14px;
+    }
+    .toolbar select,.toolbar button{
+      margin:0;
+      min-height:42px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      padding:9px 11px;
+      font-size:.88rem;
+    }
+    .toolbar select{flex:1;min-width:180px}
+    .avatar-box{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      background:linear-gradient(135deg,#ecfdf5,#eff6ff);
+      border:1px solid var(--border);
+      padding:12px;
+      border-radius:16px;
+      margin-bottom:16px;
+    }
+    .avatar{
+      width:72px;height:72px;border-radius:50%;
+      display:grid;place-items:center;
+      background:#fff;
+      border:3px solid #99f6e4;
+      font-size:34px;
+      box-shadow:0 6px 18px rgba(15,118,110,.10);
+      flex:0 0 auto;
+      position:relative;
+      overflow:hidden;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 16%;display:block}
+    .avatar.speaking::after{
+      content:"";
+      position:absolute;inset:-7px;
+      border-radius:50%;
+      border:3px solid rgba(15,118,110,.25);
+      animation:pulse 1s infinite;
+    }
+    @keyframes pulse{
+      0%{transform:scale(.95);opacity:.8}
+      70%{transform:scale(1.18);opacity:0}
+      100%{transform:scale(1.18);opacity:0}
+    }
+    .avatar-text{flex:1}
+    .avatar-text b{display:block;margin-bottom:3px}
+    .avatar-text span{font-size:.82rem;color:var(--muted)}
+    .voice-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+    .voice-btn{
+      border:0;background:var(--primary);color:#fff;
+      border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer;
+    }
+    .voice-btn.secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}
+
+
+    .symptom-browser{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:16px;
+      box-shadow:var(--shadow);
+    }
+    .symptom-browser h2{margin:0 0 6px;font-size:1.05rem}
+    .symptom-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+    .symptom-tools input{margin:0}
+    .symptom-tools button{border:0;background:var(--primary);color:#fff;border-radius:12px;padding:0 14px;font-weight:700}
+    .symptom-filters{display:flex;gap:7px;overflow-x:auto;padding:10px 0 4px}
+    .filter-chip{
+      white-space:nowrap;border:1px solid var(--border);background:#fff;
+      border-radius:999px;padding:7px 10px;font-size:.78rem;cursor:pointer
+    }
+    .filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .symptom-list{display:grid;gap:8px;margin-top:12px;max-height:430px;overflow:auto;padding-right:2px}
+    .symptom-item{
+      border:1px solid var(--border);border-radius:13px;padding:11px 12px;background:#fbfefe;
+      cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:flex-start
+    }
+    .symptom-item:hover{border-color:#99d5cf}
+    .symptom-item b{font-size:.88rem;line-height:1.35}
+    .symptom-item small{display:block;color:var(--muted);margin-top:3px}
+    .urgent-pill{
+      flex:0 0 auto;background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3;
+      border-radius:999px;padding:4px 7px;font-size:.68rem;font-weight:800
+    }
+    .symptom-summary{
+      margin-top:12px;padding:12px;border-radius:13px;background:#f8fafc;border:1px solid var(--border)
+    }
+    .symptom-summary.urgent{background:#fff1f2;border-color:#fecdd3;color:#7f1d1d}
+
+
+    .scanner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+    .scan-type{
+      border:1px solid var(--border);background:#fff;border-radius:14px;padding:12px 7px;
+      cursor:pointer;font-weight:800;color:var(--text);min-height:74px
+    }
+    .scan-type span{display:block;font-size:1.45rem;margin-bottom:4px}
+    .scan-type.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .scan-upload{
+      display:block;border:2px dashed #99c9c4;border-radius:16px;padding:18px;text-align:center;
+      background:#f8fffe;cursor:pointer;margin-top:12px
+    }
+    .scan-upload input{display:none}
+    .scan-preview{margin-top:14px;text-align:center}
+    .scan-preview img{max-width:100%;max-height:420px;border-radius:14px;border:1px solid var(--border)}
+    .scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .scan-actions button{
+      border:0;border-radius:11px;padding:10px 12px;font-weight:800;cursor:pointer
+    }
+    .scan-primary{background:var(--primary);color:#fff}
+    .scan-secondary{background:#eef6f5;color:var(--primary-2)}
+    .scan-danger{background:#fff1f2;color:var(--danger)}
+    .scan-result{
+      margin-top:14px;padding:13px;border-radius:14px;border:1px solid var(--border);background:#f8fafc
+    }
+    .scan-result h3{margin:0 0 8px;font-size:1rem}
+    .scan-form{display:grid;gap:9px;margin-top:12px}
+    .scan-form textarea{
+      width:100%;min-height:92px;padding:12px;border:1px solid #cbd5e1;border-radius:12px;
+      font:inherit;resize:vertical
+    }
+    .scan-history-item{
+      border:1px solid var(--border);background:#fff;border-radius:13px;padding:11px;margin-top:8px
+    }
+    .scan-history-item small{color:var(--muted)}
+
+
+    .voice-search-wrap{
+      display:flex;gap:8px;align-items:center;margin-top:10px;
+    }
+    .voice-search-wrap input{margin:0}
+    .mic-search-btn{
+      flex:0 0 auto;width:48px;height:48px;border:0;border-radius:14px;
+      background:var(--primary);color:#fff;font-size:1.25rem;cursor:pointer
+    }
+    .mic-search-btn.listening{animation:pulse 1s infinite;background:#b91c1c}
+    .directory-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+    .directory-tab{
+      border:1px solid var(--border);background:#fff;border-radius:12px;padding:11px;
+      font-weight:800;cursor:pointer;color:var(--text)
+    }
+    .directory-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .directory-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+    .directory-toolbar input,.directory-toolbar select{margin:0}
+    .directory-list{display:grid;gap:9px}
+    .directory-card{
+      background:#fbfefe;border:1px solid var(--border);border-radius:14px;padding:12px
+    }
+    .directory-card b{display:block;margin-bottom:4px}
+    .directory-card small{color:var(--muted)}
+    .official-link{
+      display:inline-block;margin-top:8px;padding:8px 10px;border-radius:10px;
+      background:#eef6f5;color:var(--primary-2);font-weight:800;text-decoration:none
+    }
+    .source-box{
+      margin-top:12px;padding:12px;border-radius:13px;background:#eff6ff;
+      border:1px solid #bfdbfe;font-size:.85rem
+    }
+
+    @media(max-width:520px){
+      .app{padding-left:10px;padding-right:10px}
+      .grid{gap:7px}
+      .mode-btn{font-size:.76rem;padding:11px 5px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo">⚕️</div>
+        <div>
+          <h1>DocMed</h1>
+          <p class="subtitle">Orientación farmacológica educativa — no prescribe ni diagnostica</p>
+        </div>
+      </div>
+    </header>
+
+
+    <div class="toolbar">
+      <select id="languageSelect" aria-label="Idioma">
+        <option value="auto">🌐 Automático / idioma del dispositivo</option>
+        <option value="es-ES">Español</option>
+        <option value="en-US">English</option>
+        <option value="pt-BR">Português</option>
+        <option value="fr-FR">Français</option>
+        <option value="de-DE">Deutsch</option>
+        <option value="it-IT">Italiano</option>
+        <option value="ca-ES">Català</option>
+        <option value="gl-ES">Galego</option>
+        <option value="eu-ES">Euskara</option>
+        <option value="nl-NL">Nederlands</option>
+        <option value="pl-PL">Polski</option>
+        <option value="cs-CZ">Čeština</option>
+        <option value="sk-SK">Slovenčina</option>
+        <option value="hu-HU">Magyar</option>
+        <option value="ro-RO">Română</option>
+        <option value="bg-BG">Български</option>
+        <option value="ru-RU">Русский</option>
+        <option value="uk-UA">Українська</option>
+        <option value="el-GR">Ελληνικά</option>
+        <option value="tr-TR">Türkçe</option>
+        <option value="ar-SA">العربية</option>
+        <option value="he-IL">עברית</option>
+        <option value="fa-IR">فارسی</option>
+        <option value="hi-IN">हिन्दी</option>
+        <option value="bn-BD">বাংলা</option>
+        <option value="ur-PK">اردو</option>
+        <option value="ta-IN">தமிழ்</option>
+        <option value="te-IN">తెలుగు</option>
+        <option value="th-TH">ไทย</option>
+        <option value="vi-VN">Tiếng Việt</option>
+        <option value="id-ID">Bahasa Indonesia</option>
+        <option value="ms-MY">Bahasa Melayu</option>
+        <option value="zh-CN">中文（简体）</option>
+        <option value="zh-TW">中文（繁體）</option>
+        <option value="ja-JP">日本語</option>
+        <option value="ko-KR">한국어</option>
+        <option value="sw-KE">Kiswahili</option>
+        <option value="af-ZA">Afrikaans</option>
+      </select>
+      <button id="voiceSettingsBtn" type="button">🎙️ Voz</button>
+    </div>
+
+    <div class="avatar-box">
+      <div class="avatar" id="medicalAvatar"><img src="DocMed.png" alt="Avatar humano de DocMed"></div>
+      <div class="avatar-text">
+        <b id="avatarTitle">Avatar humano de DocMed</b>
+        <span id="avatarSubtitle">Puede explicar en voz alta síntomas, medicamentos, beneficios, riesgos y señales de alarma.</span>
+        <div class="voice-actions">
+          <button class="voice-btn" id="speakIntroBtn" type="button">🔊 Presentación</button>
+          <button class="voice-btn secondary" id="stopVoiceBtn" type="button">⏹ Detener</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice">
+      <b>Importante:</b> esta aplicación es un proyecto educativo. No reemplaza la evaluación médica ni indica dosis personalizadas.
+    </div>
+
+    <section id="homeView">
+
+      <div class="symptom-browser">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div>
+            <h2 style="margin-bottom:2px">🔎 Buscador de síntomas</h2>
+            <div class="hint">39 síntomas disponibles, organizados por categorías.</div>
+          </div>
+          <button id="toggleSymptomBrowser" type="button" class="voice-btn secondary">Mostrar</button>
+        </div>
+        <div id="symptomBrowserContent" class="hidden">
+          <div class="hint" style="margin-top:10px">Buscá por nombre o elegí un síntoma. Los síntomas de alarma se identifican antes de mostrar información farmacológica.</div>
+        <div class="symptom-tools">
+          <input id="symptomCatalogSearch" type="search" placeholder="Ej.: dolor en el pecho, poliuria, fiebre, ansiedad...">
+          <button id="clearSymptomSearch" type="button">Limpiar</button>
+        </div>
+        <div class="symptom-filters" id="symptomFilters"></div>
+        <div id="selectedSymptomSummary" class="symptom-summary hidden"></div>
+        <div class="symptom-list" id="symptomCatalogList"></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <button class="mode-btn active" data-mode="symptom"><span>🩺</span>Por síntoma</button>
+        <button class="mode-btn" data-mode="drug"><span>💊</span>Medicamento</button>
+        <button class="mode-btn" data-mode="category"><span>📚</span>Categorías</button>
+      </div>
+
+      <div class="panel" id="searchPanel">
+        <label id="searchLabel" for="searchInput">¿Qué síntoma querés consultar?</label>
+        <div class="voice-search-wrap">
+          <input id="searchInput" type="search" placeholder="Ej.: dolor de cabeza, alergia, acidez..." autocomplete="off">
+          <button id="voiceSearchBtn" class="mic-search-btn" type="button" title="Buscar por voz">🎙️</button>
+        </div>
+        <div class="hint" id="searchHint">La app mostrará categorías y medicamentos relacionados con fines educativos.</div>
+      </div>
+
+      <div id="categoryPanel" class="panel hidden">
+        <label>Explorar por efecto terapéutico</label>
+        <div class="category-list" id="categoryList" style="margin-top:12px"></div>
+      </div>
+
+      <div class="results" id="results"></div>
+    </section>
+
+    <section id="alarmView" class="hidden">
+      <div class="panel">
+        <h2 style="margin-top:0">🚨 Señales de alarma</h2>
+        <p>Ante alguno de estos signos, la prioridad no es elegir un medicamento sino buscar evaluación profesional:</p>
+        <ul>
+          <li>Dificultad para respirar, labios azulados o sensación de asfixia.</li>
+          <li>Dolor intenso en el pecho, desmayo o debilidad repentina.</li>
+          <li>Confusión, convulsiones, pérdida de conciencia o rigidez marcada de cuello.</li>
+          <li>Reacción alérgica grave: hinchazón de cara o lengua, ronchas generalizadas con dificultad respiratoria.</li>
+          <li>Sangrado abundante, vómitos con sangre o materia fecal negra.</li>
+          <li>Fiebre persistente con deterioro general, especialmente en niños pequeños, adultos mayores o personas vulnerables.</li>
+          <li>Dolor súbito e intenso o síntomas que empeoran rápidamente.</li>
+        </ul>
+        <p class="meta">En una emergencia, utilizá los servicios de urgencias de tu localidad.</p>
+      </div>
+    </section>
+
+
+
+    <section id="directoryView" class="hidden">
+      <div class="panel">
+        <h2 style="margin-top:0">🇦🇷 Directorio de salud — República Argentina</h2>
+        <p>Consulta educativa de <b>farmacias registradas</b> y <b>establecimientos de salud</b>. Para verificar habilitación vigente, usá siempre el padrón oficial correspondiente.</p>
+
+        <div class="directory-tabs">
+          <button class="directory-tab active" data-directory="pharmacy" type="button">💊 Farmacias</button>
+          <button class="directory-tab" data-directory="clinic" type="button">🏥 Clínicas / Centros</button>
+        </div>
+
+        <div class="directory-toolbar">
+          <select id="provinceSelect" aria-label="Provincia"></select>
+          <input id="directorySearch" type="search" placeholder="Buscar por nombre o localidad...">
+        </div>
+
+        <div id="directoryList" class="directory-list"></div>
+
+        <div class="source-box">
+          <b>Fuentes oficiales recomendadas</b><br>
+          • REFAR / Datos Argentina: registro federal de establecimientos de farmacia.<br>
+          • REFES / Ministerio de Salud: registro federal de establecimientos de salud públicos y privados.<br>
+          <a class="official-link" href="https://datos.gob.ar/es/dataset?tags=REFAR" target="_blank" rel="noopener">Abrir REFAR / Datos Argentina</a>
+          <a class="official-link" href="https://datos.gob.ar/es/dataset/salud-listado-establecimientos-salud-asentados-registro-federal-refes" target="_blank" rel="noopener">Abrir REFES</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="scannerView" class="hidden">
+      <div class="panel">
+        <h2 style="margin-top:0">📷 Escáner DocMed</h2>
+        <p>Capturá o cargá una imagen de una <b>receta</b>, un <b>medicamento</b> o una <b>factura/ticket</b>.</p>
+
+        <div class="scanner-grid">
+          <button class="scan-type active" data-scan-type="Receta"><span>📝</span>Receta</button>
+          <button class="scan-type" data-scan-type="Medicamento"><span>💊</span>Medicamento</button>
+          <button class="scan-type" data-scan-type="Ticket"><span>🧾</span>Ticket</button>
+        </div>
+
+        <label class="scan-upload">
+          <input id="scanInput" type="file" accept="image/*" capture="environment">
+          <b>📸 Abrir cámara o elegir imagen</b>
+          <div class="hint">En el celular, la opción de cámara depende del navegador.</div>
+        </label>
+
+        <div id="scanPreview" class="scan-preview hidden">
+          <img id="scanImage" alt="Documento escaneado">
+        </div>
+
+        <div class="scan-actions">
+          <button id="analyzeScanBtn" class="scan-primary" type="button">🔎 Analizar</button>
+          <button id="clearScanBtn" class="scan-secondary" type="button">↻ Nueva captura</button>
+        </div>
+
+        <div id="scanResult" class="scan-result">
+          <h3>Resultado</h3>
+          <div id="scanResultText" class="hint">Todavía no se cargó ninguna imagen.</div>
+        </div>
+
+        <div class="scan-form">
+          <label>Datos visibles / notas
+            <textarea id="scanNotes" placeholder="Ej.: medicamento indicado, médico, fecha, importe, farmacia, dosis escrita en la receta..."></textarea>
+          </label>
+          <button id="saveScanBtn" class="voice-btn" type="button">💾 Guardar en historial local</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top:0">🗂 Historial de escaneos</h2>
+        <div id="scanHistory"></div>
+        <div class="scan-actions">
+          <button id="clearHistoryBtn" class="scan-danger" type="button">Eliminar historial</button>
+        </div>
+      </div>
+
+      <div class="notice">
+        <b>Seguridad:</b> una foto de una receta no confirma por sí sola que un medicamento sea apropiado. Verificá siempre nombre, concentración, paciente e indicación con un profesional. DocMed no modifica ni interpreta legalmente recetas.
+      </div>
+    </section>
+
+    <section id="aboutView" class="hidden">
+      <div class="panel">
+        <h2 style="margin-top:0">ℹ️ Acerca del proyecto V4</h2>
+        <p><b>Objetivo:</b> enseñar cómo se clasifican los medicamentos según su efecto terapéutico, relacionarlos de forma prudente con síntomas y reconocer primero las señales de alarma.</p>
+        <p><b>Alcance:</b> la base incluida es demostrativa y no exhaustiva. No contempla historia clínica, embarazo, edad, alergias, interacciones completas ni función renal/hepática.</p>
+        <p><b>Idiomas:</b> la interfaz y el sistema de voz están preparados para trabajar con códigos de idioma internacionales. La disponibilidad de una voz concreta depende de las voces instaladas en cada dispositivo. La base clínica principal está redactada en español y puede ampliarse con traducciones verificadas.</p><p><b>Uso recomendado:</b> educación, demostraciones académicas y prototipos de UX/UI en salud.</p>
+      </div>
+    </section>
+
+    <footer>
+      <b>Advertencia médica:</b> la información presentada es general y educativa. No te automediques ni suspendas tratamientos indicados. Consultá a un médico o farmacéutico antes de iniciar un medicamento, especialmente si tomás otros fármacos, tenés enfermedades crónicas, embarazo o síntomas persistentes.
+    </footer>
+  </div>
+
+  <nav class="bottom-nav" style="grid-template-columns:repeat(5,1fr)">
+    <button class="navbtn active" data-view="homeView"><b>⌂</b>Inicio</button>
+    <button class="navbtn" data-view="directoryView"><b>📍</b>Directorio</button>
+    <button class="navbtn" data-view="scannerView"><b>📷</b>Escáner</button>
+    <button class="navbtn" data-view="alarmView"><b>🚨</b>Alarmas</button>
+    <button class="navbtn" data-view="aboutView"><b>ⓘ</b>Proyecto</button>
+  </nav>
+
+<script>
+const drugs = [
+  {
+    "name": "Enalapril",
+    "category": "Antihipertensivos / IECA",
+    "prescription": true,
+    "controls": "Inhibe la enzima convertidora de angiotensina, reduciendo la formación de angiotensina II. Disminuye la presión arterial y la carga de trabajo del corazón.",
+    "symptoms": [
+      "hipertensión diagnosticada",
+      "insuficiencia cardíaca diagnosticada"
+    ],
+    "pros": [
+      "Reduce la presión arterial.",
+      "Puede ser útil en insuficiencia cardíaca y en determinados pacientes con riesgo cardiovascular."
+    ],
+    "cons": [
+      "Puede causar tos seca, mareos, aumento de potasio y deterioro renal.",
+      "Puede producir angioedema, una reacción poco frecuente pero grave.",
+      "No debe usarse durante el embarazo."
+    ],
+    "alarm": "Hinchazón de cara, labios o lengua, dificultad respiratoria, desmayo o debilidad intensa requieren atención urgente."
+  },
+  {
+    "name": "Losartán",
+    "category": "Antihipertensivos / ARA-II",
+    "prescription": true,
+    "controls": "Bloquea los receptores de angiotensina II, favoreciendo la relajación vascular y la reducción de la presión arterial.",
+    "symptoms": [
+      "hipertensión diagnosticada",
+      "protección renal en determinados pacientes con diabetes"
+    ],
+    "pros": [
+      "Reduce la presión arterial.",
+      "Suele producir menos tos que los IECA."
+    ],
+    "cons": [
+      "Puede aumentar el potasio y alterar la función renal.",
+      "Puede causar mareos o presión baja.",
+      "No debe usarse durante el embarazo."
+    ],
+    "alarm": "Desmayo, debilidad marcada, hinchazón facial o dificultad respiratoria requieren evaluación."
+  },
+  {
+    "name": "Amlodipina",
+    "category": "Antihipertensivos / Bloqueantes cálcicos",
+    "prescription": true,
+    "controls": "Bloquea canales de calcio tipo L en el músculo vascular, produciendo vasodilatación y disminuyendo la presión arterial.",
+    "symptoms": [
+      "hipertensión diagnosticada",
+      "angina diagnosticada"
+    ],
+    "pros": [
+      "Control sostenido de la presión arterial.",
+      "También puede utilizarse para determinados cuadros de angina."
+    ],
+    "cons": [
+      "Puede causar hinchazón de tobillos, rubor, cefalea, palpitaciones o mareos."
+    ],
+    "alarm": "Dolor de pecho intenso o nuevo, desmayo o dificultad respiratoria requieren atención urgente."
+  },
+  {
+    "name": "Bisoprolol",
+    "category": "Betabloqueantes",
+    "prescription": true,
+    "controls": "Bloquea principalmente receptores beta-1 cardíacos, disminuyendo la frecuencia y el trabajo del corazón.",
+    "symptoms": [
+      "hipertensión diagnosticada",
+      "insuficiencia cardíaca diagnosticada",
+      "ciertas arritmias diagnosticadas"
+    ],
+    "pros": [
+      "Puede reducir frecuencia cardíaca y presión arterial.",
+      "Es útil en determinadas enfermedades cardiovasculares."
+    ],
+    "cons": [
+      "Puede causar pulso lento, cansancio, mareos o presión baja.",
+      "No debe suspenderse bruscamente sin indicación médica.",
+      "Puede enmascarar algunos síntomas de hipoglucemia."
+    ],
+    "alarm": "Desmayo, dificultad respiratoria importante, dolor torácico o pulso extremadamente lento requieren atención."
+  },
+  {
+    "name": "Aspirina (ácido acetilsalicílico)",
+    "category": "Antiagregantes plaquetarios / AINE",
+    "prescription": false,
+    "controls": "A dosis antiagregantes inhibe de forma irreversible la COX-1 plaquetaria y reduce la formación de tromboxano; a otras dosis también tiene efecto analgésico y antiinflamatorio.",
+    "symptoms": [
+      "prevención cardiovascular indicada por un profesional",
+      "dolor leve en situaciones seleccionadas"
+    ],
+    "pros": [
+      "Puede reducir el riesgo de nuevos eventos trombóticos en pacientes correctamente seleccionados."
+    ],
+    "cons": [
+      "Aumenta el riesgo de sangrado y puede irritar el estómago.",
+      "No es apropiada para todas las personas y no debe iniciarse como prevención cardiovascular por cuenta propia.",
+      "En niños y adolescentes con infecciones virales puede asociarse a síndrome de Reye."
+    ],
+    "alarm": "Vómitos con sangre, heces negras, sangrado persistente o reacción alérgica grave requieren atención urgente."
+  },
+  {
+    "name": "Clopidogrel",
+    "category": "Antiagregantes plaquetarios",
+    "prescription": true,
+    "controls": "Bloquea de forma irreversible el receptor plaquetario P2Y12 y disminuye la agregación de plaquetas.",
+    "symptoms": [
+      "prevención de trombosis indicada por un profesional",
+      "antecedente de infarto o accidente cerebrovascular en pacientes seleccionados"
+    ],
+    "pros": [
+      "Reduce eventos trombóticos en indicaciones cardiovasculares específicas."
+    ],
+    "cons": [
+      "Puede causar hematomas y sangrados.",
+      "Tiene interacciones farmacológicas y no debe suspenderse sin supervisión, especialmente tras ciertos procedimientos coronarios."
+    ],
+    "alarm": "Sangrado importante, debilidad súbita, dificultad para hablar o dolor de cabeza brusco e intenso requieren atención urgente."
+  },
+  {
+    "name": "Simvastatina",
+    "category": "Hipolipemiantes / Estatinas",
+    "prescription": true,
+    "controls": "Inhibe la HMG-CoA reductasa en el hígado, reduciendo la síntesis de colesterol y principalmente el LDL.",
+    "symptoms": [
+      "colesterol LDL elevado diagnosticado",
+      "prevención cardiovascular en pacientes seleccionados"
+    ],
+    "pros": [
+      "Reduce colesterol LDL y riesgo cardiovascular en indicaciones adecuadas."
+    ],
+    "cons": [
+      "Puede causar dolores musculares y alteraciones hepáticas.",
+      "Tiene interacciones relevantes con diversos medicamentos y alimentos.",
+      "El riesgo muscular aumenta con ciertas combinaciones y dosis."
+    ],
+    "alarm": "Dolor muscular intenso con debilidad marcada u orina oscura requiere evaluación rápida."
+  },
+  {
+    "name": "Atorvastatina",
+    "category": "Hipolipemiantes / Estatinas",
+    "prescription": true,
+    "controls": "Inhibe la HMG-CoA reductasa hepática y reduce de forma importante el colesterol LDL.",
+    "symptoms": [
+      "colesterol LDL elevado diagnosticado",
+      "prevención cardiovascular en pacientes seleccionados"
+    ],
+    "pros": [
+      "Potente reducción del LDL.",
+      "Disminuye el riesgo cardiovascular en pacientes con indicación."
+    ],
+    "cons": [
+      "Puede producir molestias musculares y alteraciones de enzimas hepáticas.",
+      "Puede interactuar con otros medicamentos."
+    ],
+    "alarm": "Debilidad o dolor muscular intenso, especialmente con fiebre u orina oscura, requiere evaluación."
+  },
+  {
+    "name": "Espironolactona",
+    "category": "Diuréticos ahorradores de potasio / Antagonistas de aldosterona",
+    "prescription": true,
+    "controls": "Bloquea los receptores de aldosterona, favoreciendo la eliminación de sodio y agua mientras conserva potasio.",
+    "symptoms": [
+      "insuficiencia cardíaca diagnosticada",
+      "edema diagnosticado",
+      "hiperaldosteronismo",
+      "hipertensión resistente"
+    ],
+    "pros": [
+      "Útil en determinadas formas de insuficiencia cardíaca y retención de líquidos."
+    ],
+    "cons": [
+      "Puede elevar peligrosamente el potasio.",
+      "Puede alterar la función renal y causar cambios hormonales como ginecomastia."
+    ],
+    "alarm": "Debilidad intensa, palpitaciones, desmayo o confusión pueden ser signos de alteraciones electrolíticas."
+  },
+  {
+    "name": "Furosemida",
+    "category": "Diuréticos de asa",
+    "prescription": true,
+    "controls": "Bloquea el cotransportador Na-K-2Cl en el asa de Henle y aumenta la eliminación de sodio y agua.",
+    "symptoms": [
+      "edema diagnosticado",
+      "insuficiencia cardíaca con retención de líquidos",
+      "ciertos cuadros de hipertensión"
+    ],
+    "pros": [
+      "Potente efecto diurético y rápida reducción de sobrecarga de líquidos en indicaciones apropiadas."
+    ],
+    "cons": [
+      "Puede causar deshidratación, presión baja y alteraciones de sodio, potasio y función renal.",
+      "Puede aumentar el ácido úrico."
+    ],
+    "alarm": "Desmayo, confusión, debilidad intensa, palpitaciones o disminución marcada de la orina requieren evaluación."
+  },
+  {
+    "name": "Metformina",
+    "category": "Antidiabéticos / Biguanidas",
+    "prescription": true,
+    "controls": "Reduce la producción hepática de glucosa y mejora la sensibilidad a la insulina.",
+    "symptoms": [
+      "diabetes tipo 2 diagnosticada",
+      "prediabetes en situaciones seleccionadas por un profesional"
+    ],
+    "pros": [
+      "Es tratamiento de primera línea frecuente en diabetes tipo 2.",
+      "Por sí sola tiene bajo riesgo de hipoglucemia."
+    ],
+    "cons": [
+      "Puede causar náuseas, diarrea y molestias digestivas.",
+      "En ciertas situaciones de insuficiencia renal o enfermedad grave aumenta el riesgo de acidosis láctica.",
+      "El uso prolongado puede asociarse a déficit de vitamina B12."
+    ],
+    "alarm": "Respiración rápida, debilidad extrema, somnolencia intensa o deterioro general requieren atención urgente."
+  },
+  {
+    "name": "Empagliflozina",
+    "category": "Antidiabéticos / Inhibidores SGLT2",
+    "prescription": true,
+    "controls": "Bloquea SGLT2 en el riñón, aumentando la eliminación urinaria de glucosa.",
+    "symptoms": [
+      "diabetes tipo 2 diagnosticada",
+      "insuficiencia cardíaca en pacientes seleccionados",
+      "enfermedad renal crónica en pacientes seleccionados"
+    ],
+    "pros": [
+      "Reduce glucemia y puede aportar beneficios cardiovasculares y renales en pacientes apropiados."
+    ],
+    "cons": [
+      "Puede causar infecciones genitales, deshidratación y presión baja.",
+      "Existe riesgo infrecuente pero grave de cetoacidosis incluso con glucosa no muy elevada."
+    ],
+    "alarm": "Náuseas intensas, vómitos, dolor abdominal, respiración rápida o confusión requieren atención urgente."
+  },
+  {
+    "name": "Dapagliflozina",
+    "category": "Antidiabéticos / Inhibidores SGLT2",
+    "prescription": true,
+    "controls": "Inhibe SGLT2 renal y favorece la eliminación de glucosa en la orina.",
+    "symptoms": [
+      "diabetes tipo 2 diagnosticada",
+      "insuficiencia cardíaca en pacientes seleccionados",
+      "enfermedad renal crónica en pacientes seleccionados"
+    ],
+    "pros": [
+      "Puede mejorar control glucémico y ofrecer beneficios cardíacos y renales en determinadas indicaciones."
+    ],
+    "cons": [
+      "Puede causar infecciones genitales, deshidratación y presión baja.",
+      "Puede producir cetoacidosis infrecuente pero grave."
+    ],
+    "alarm": "Vómitos, dolor abdominal, respiración acelerada o somnolencia marcada requieren atención urgente."
+  },
+  {
+    "name": "Insulina humana (acción rápida e intermedia)",
+    "category": "Insulinas / Antidiabéticos",
+    "prescription": true,
+    "controls": "Sustituye o complementa la insulina natural, facilitando la entrada de glucosa a los tejidos y disminuyendo la glucemia.",
+    "symptoms": [
+      "diabetes tipo 1 diagnosticada",
+      "diabetes tipo 2 que requiere insulina",
+      "otras situaciones indicadas por un profesional"
+    ],
+    "pros": [
+      "Es esencial en diabetes tipo 1 y muy eficaz para reducir la glucemia."
+    ],
+    "cons": [
+      "Puede causar hipoglucemia, aumento de peso y reacciones en el sitio de inyección.",
+      "El tipo, horario y dosis requieren individualización y educación específica."
+    ],
+    "alarm": "Confusión, sudoración intensa, convulsiones o pérdida de conciencia pueden indicar hipoglucemia grave y requieren asistencia inmediata."
+  },
+  {
+    "name": "Insulina glargina",
+    "category": "Insulinas / Acción prolongada",
+    "prescription": true,
+    "controls": "Proporciona una liberación prolongada de insulina basal para controlar la glucosa durante muchas horas.",
+    "symptoms": [
+      "diabetes tipo 1 diagnosticada",
+      "diabetes tipo 2 que requiere insulina basal"
+    ],
+    "pros": [
+      "Ofrece cobertura basal prolongada y relativamente estable."
+    ],
+    "cons": [
+      "Puede causar hipoglucemia y aumento de peso.",
+      "No se utiliza como sustituto directo de una insulina de acción rápida para cubrir comidas.",
+      "La dosis debe individualizarse."
+    ],
+    "alarm": "Alteración de conciencia, convulsiones o incapacidad para ingerir carbohidratos ante una hipoglucemia requieren ayuda urgente."
+  },
+  {
+    "name": "Semaglutida",
+    "category": "Antidiabéticos / Agonistas GLP-1",
+    "prescription": true,
+    "controls": "Activa receptores GLP-1, aumentando la secreción de insulina dependiente de glucosa, reduciendo glucagón y enlenteciendo el vaciamiento gástrico.",
+    "symptoms": [
+      "diabetes tipo 2 diagnosticada",
+      "control de peso en indicaciones y presentaciones específicas"
+    ],
+    "pros": [
+      "Reduce glucemia y suele favorecer pérdida de peso.",
+      "Algunas presentaciones e indicaciones aportan beneficio cardiovascular."
+    ],
+    "cons": [
+      "Náuseas, vómitos, diarrea o estreñimiento son frecuentes.",
+      "Puede asociarse a problemas biliares y pancreatitis infrecuente.",
+      "No debe utilizarse sin evaluación médica para bajar de peso."
+    ],
+    "alarm": "Dolor abdominal intenso y persistente, especialmente si se irradia a la espalda, requiere evaluación."
+  },
+  {
+    "name": "Liraglutida",
+    "category": "Antidiabéticos / Agonistas GLP-1",
+    "prescription": true,
+    "controls": "Activa receptores GLP-1, mejorando la respuesta de insulina dependiente de glucosa y reduciendo apetito y glucagón.",
+    "symptoms": [
+      "diabetes tipo 2 diagnosticada",
+      "control de peso en indicaciones específicas"
+    ],
+    "pros": [
+      "Puede mejorar la glucemia y ayudar a reducir peso en pacientes seleccionados."
+    ],
+    "cons": [
+      "Puede causar síntomas gastrointestinales.",
+      "Existe riesgo poco frecuente de pancreatitis y problemas de vesícula.",
+      "Requiere indicación y seguimiento profesional."
+    ],
+    "alarm": "Dolor abdominal fuerte y persistente o vómitos repetidos requieren evaluación."
+  },
+  {
+    "name": "Tirzepatida",
+    "category": "Antidiabéticos / Agonista GIP-GLP-1",
+    "prescription": true,
+    "controls": "Activa receptores GIP y GLP-1, mejorando la secreción de insulina dependiente de glucosa, reduciendo glucagón y apetito.",
+    "symptoms": [
+      "diabetes tipo 2 diagnosticada",
+      "control de peso en indicaciones autorizadas específicas"
+    ],
+    "pros": [
+      "Puede lograr reducciones importantes de glucemia y peso en pacientes apropiados."
+    ],
+    "cons": [
+      "Puede causar náuseas, vómitos, diarrea o estreñimiento.",
+      "Puede asociarse a enfermedad biliar y pancreatitis infrecuente.",
+      "Requiere seguimiento médico."
+    ],
+    "alarm": "Dolor abdominal intenso persistente, deshidratación o reacción alérgica grave requieren atención."
+  },
+  {
+    "name": "Amoxicilina",
+    "category": "Antibióticos / Penicilinas",
+    "prescription": true,
+    "controls": "Antibiótico betalactámico que altera la formación de la pared de bacterias susceptibles. No actúa contra virus.",
+    "symptoms": [
+      "infección bacteriana diagnosticada"
+    ],
+    "pros": [
+      "Eficaz frente a múltiples infecciones bacterianas cuando existe indicación y sensibilidad."
+    ],
+    "cons": [
+      "Puede causar diarrea, náuseas y alergias.",
+      "El uso innecesario favorece resistencia antimicrobiana.",
+      "No debe usarse para resfríos o gripe."
+    ],
+    "alarm": "Hinchazón de cara o garganta, dificultad respiratoria o erupción grave requieren atención urgente."
+  },
+  {
+    "name": "Azitromicina",
+    "category": "Antibióticos / Macrólidos",
+    "prescription": true,
+    "controls": "Inhibe la síntesis de proteínas de bacterias susceptibles.",
+    "symptoms": [
+      "infección bacteriana diagnosticada"
+    ],
+    "pros": [
+      "Útil para infecciones bacterianas específicas cuando está indicada."
+    ],
+    "cons": [
+      "No trata virus.",
+      "Puede causar molestias digestivas y, en personas susceptibles, alterar el ritmo cardíaco.",
+      "El uso inadecuado favorece resistencia."
+    ],
+    "alarm": "Desmayo, palpitaciones intensas o reacción alérgica grave requieren evaluación urgente."
+  },
+  {
+    "name": "Diazepam",
+    "category": "Ansiolíticos / Benzodiacepinas",
+    "prescription": true,
+    "controls": "Potencia la acción inhibitoria del GABA en el sistema nervioso central, produciendo efectos ansiolíticos, sedantes, anticonvulsivantes y relajantes musculares.",
+    "symptoms": [
+      "ansiedad diagnosticada en situaciones seleccionadas",
+      "espasmos musculares",
+      "convulsiones en indicaciones específicas"
+    ],
+    "pros": [
+      "Puede actuar rápidamente en indicaciones concretas."
+    ],
+    "cons": [
+      "Puede causar somnolencia, caídas, deterioro de memoria y dependencia.",
+      "Su combinación con alcohol, opioides u otros depresores puede causar depresión respiratoria grave.",
+      "No debe suspenderse bruscamente tras uso prolongado."
+    ],
+    "alarm": "Respiración lenta, dificultad para despertar o pérdida de conciencia requieren atención de emergencia."
+  },
+  {
+    "name": "Carbamazepina",
+    "category": "Anticonvulsivantes / Estabilizadores del ánimo",
+    "prescription": true,
+    "controls": "Modula canales de sodio neuronales y disminuye descargas eléctricas anormales.",
+    "symptoms": [
+      "epilepsia diagnosticada",
+      "neuralgia del trigémino",
+      "trastorno bipolar en situaciones seleccionadas"
+    ],
+    "pros": [
+      "Eficaz en varios tipos de convulsiones y en neuralgia del trigémino."
+    ],
+    "cons": [
+      "Puede causar mareos, somnolencia, alteraciones del sodio, hígado y células sanguíneas.",
+      "Tiene numerosas interacciones.",
+      "Puede producir reacciones cutáneas graves poco frecuentes."
+    ],
+    "alarm": "Erupción con ampollas, fiebre, llagas en boca, ictericia o infección grave requieren atención rápida."
+  },
+  {
+    "name": "Fluoxetina",
+    "category": "Antidepresivos / ISRS",
+    "prescription": true,
+    "controls": "Aumenta la disponibilidad de serotonina al inhibir su recaptación neuronal.",
+    "symptoms": [
+      "depresión diagnosticada",
+      "trastorno obsesivo-compulsivo",
+      "otros trastornos psiquiátricos según indicación"
+    ],
+    "pros": [
+      "Tratamiento eficaz para depresión y varios trastornos de ansiedad/obsesivos en pacientes seleccionados."
+    ],
+    "cons": [
+      "Puede causar náuseas, insomnio, ansiedad inicial o disfunción sexual.",
+      "Tiene interacciones y puede contribuir a síndrome serotoninérgico.",
+      "En algunas personas pueden aparecer o empeorar ideas suicidas al iniciar o ajustar tratamiento, especialmente en jóvenes."
+    ],
+    "alarm": "Ideas de autolesión, agitación extrema, fiebre con rigidez o confusión requieren ayuda médica inmediata."
+  },
+  {
+    "name": "Clorpromazina",
+    "category": "Antipsicóticos típicos",
+    "prescription": true,
+    "controls": "Bloquea principalmente receptores dopaminérgicos D2 y también otros receptores del sistema nervioso autónomo.",
+    "symptoms": [
+      "psicosis diagnosticada",
+      "agitación grave en indicaciones específicas",
+      "otras indicaciones especializadas"
+    ],
+    "pros": [
+      "Puede reducir síntomas psicóticos y agitación en pacientes apropiados."
+    ],
+    "cons": [
+      "Puede causar sedación, presión baja, aumento de peso y efectos anticolinérgicos.",
+      "Puede producir trastornos del movimiento y alteraciones del ritmo cardíaco.",
+      "Existe riesgo raro pero grave de síndrome neuroléptico maligno."
+    ],
+    "alarm": "Fiebre alta, rigidez muscular, confusión, desmayo o movimientos anormales intensos requieren atención inmediata."
+  },
+  {
+    "name": "Paracetamol",
+    "category": "Analgésicos / Antitérmicos",
+    "prescription": false,
+    "controls": "Reduce dolor y fiebre principalmente mediante acciones centrales relacionadas con la percepción del dolor y la regulación térmica.",
+    "symptoms": [
+      "dolor de cabeza",
+      "fiebre",
+      "dolor muscular",
+      "dolor dental",
+      "malestar general"
+    ],
+    "pros": [
+      "Útil para dolor leve a moderado y fiebre.",
+      "Menor irritación gástrica que muchos AINE."
+    ],
+    "cons": [
+      "La sobredosis puede provocar daño hepático grave.",
+      "Debe evitarse duplicar productos que también contengan paracetamol."
+    ],
+    "alarm": "Una sobredosis, incluso sin síntomas iniciales importantes, requiere evaluación médica urgente."
+  },
+  {
+    "name": "Ibuprofeno",
+    "category": "Analgésicos / Antiinflamatorios (AINE)",
+    "prescription": false,
+    "controls": "Inhibe enzimas COX y reduce prostaglandinas, disminuyendo dolor, inflamación y fiebre.",
+    "symptoms": [
+      "dolor muscular",
+      "dolor menstrual",
+      "dolor dental",
+      "inflamación",
+      "fiebre",
+      "dolor de cabeza"
+    ],
+    "pros": [
+      "Tiene efectos analgésico, antiinflamatorio y antitérmico."
+    ],
+    "cons": [
+      "Puede causar gastritis, úlceras o sangrado y afectar la función renal.",
+      "Puede aumentar la presión arterial y el riesgo cardiovascular en determinadas personas."
+    ],
+    "alarm": "Vómitos con sangre, heces negras, falta de aire, hinchazón marcada o dolor torácico requieren atención."
+  },
+  {
+    "name": "Morfina",
+    "category": "Analgésicos opioides",
+    "prescription": true,
+    "controls": "Activa principalmente receptores opioides mu en el sistema nervioso central y reduce la percepción del dolor intenso.",
+    "symptoms": [
+      "dolor intenso que requiere manejo médico",
+      "dolor oncológico o agudo en indicaciones específicas"
+    ],
+    "pros": [
+      "Es un analgésico potente para dolor intenso cuando está correctamente indicado y monitorizado."
+    ],
+    "cons": [
+      "Puede causar somnolencia, náuseas, estreñimiento, tolerancia, dependencia y depresión respiratoria.",
+      "La combinación con alcohol, benzodiacepinas u otros sedantes puede ser mortal.",
+      "Requiere prescripción y control estricto."
+    ],
+    "alarm": "Respiración lenta o superficial, pupilas muy pequeñas, coloración azulada o imposibilidad de despertar son signos de sobredosis y requieren emergencia inmediata."
+  }
+];
+
+const categories = [...new Set(drugs.map(d => d.category))].sort();
+let mode = "symptom";
+
+const results = document.getElementById("results");
+const input = document.getElementById("searchInput");
+const searchLabel = document.getElementById("searchLabel");
+const searchHint = document.getElementById("searchHint");
+const searchPanel = document.getElementById("searchPanel");
+const categoryPanel = document.getElementById("categoryPanel");
+const categoryList = document.getElementById("categoryList");
+
+function norm(s){
+  return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
+function renderDrug(d){
+  return `
+    <article class="card">
+      <div class="card-head">
+        <div class="cat">1. CLASIFICACIÓN POR EFECTO: ${d.category}</div>
+        <div class="drug">${d.name}</div>
+        <div class="badges">
+          <span class="badge">${d.category}</span>
+          <span class="badge ${d.prescription ? 'rx' : 'otc'}">${d.prescription ? 'Requiere indicación profesional' : 'Puede ser de venta libre según país/presentación'}</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <strong>2. QUÉ CURA O CONTROLA</strong>
+          <p>${d.controls}</p>
+        </div>
+        <div class="section">
+          <strong>3. SÍNTOMAS COMPATIBLES / SITUACIONES DE USO</strong>
+          <ul>${d.symptoms.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="section">
+          <strong>4. PROS (Beneficios principales)</strong>
+          <ul>${d.pros.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="section risk">
+          <strong>5. CONTRAS (Riesgos y efectos secundarios)</strong>
+          <ul>${d.cons.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="alarm"><b>Señal de alarma:</b> ${d.alarm}</div>
+        <div class="voice-actions" style="margin-top:12px">
+          <button class="voice-btn speak-drug-btn" type="button" data-drug="${d.name.replace(/"/g,'&quot;')}">🔊 Escuchar explicación</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function show(items){
+  if(!items.length){
+    results.innerHTML = `<div class="panel empty">No se encontraron coincidencias. Probá con otro término o explorá las categorías.</div>`;
+    return;
+  }
+  results.innerHTML = items.map(renderDrug).join("");
+}
+
+function search(){
+  const q = norm(input.value.trim());
+  if(!q){ results.innerHTML = ""; return; }
+
+  let found = [];
+  if(mode === "symptom"){
+    found = drugs.filter(d =>
+      d.symptoms.some(s => norm(s).includes(q) || q.includes(norm(s))) ||
+      norm(d.controls).includes(q) ||
+      norm(d.category).includes(q)
+    );
+  } else if(mode === "drug"){
+    found = drugs.filter(d =>
+      norm(d.name).includes(q) ||
+      norm(d.category).includes(q)
+    );
+  }
+  show(found);
+}
+
+function renderCategories(){
+  categoryList.innerHTML = categories.map(c => {
+    const count = drugs.filter(d=>d.category===c).length;
+    return `<div class="category-card" data-cat="${c}">
+      <b>${c}</b>
+      <span class="meta">${count} ejemplo${count>1?'s':''} en la base educativa</span>
+    </div>`;
+  }).join("");
+
+  categoryList.querySelectorAll(".category-card").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const cat = el.dataset.cat;
+      show(drugs.filter(d=>d.category===cat));
+      window.scrollTo({top:240,behavior:"smooth"});
+    });
+  });
+}
+
+document.querySelectorAll(".mode-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    mode = btn.dataset.mode;
+    results.innerHTML = "";
+    input.value = "";
+
+    if(mode === "category"){
+      searchPanel.classList.add("hidden");
+      categoryPanel.classList.remove("hidden");
+    } else {
+      searchPanel.classList.remove("hidden");
+      categoryPanel.classList.add("hidden");
+
+      if(mode === "symptom"){
+        searchLabel.textContent = "¿Qué síntoma querés consultar?";
+        input.placeholder = "Ej.: dolor de cabeza, alergia, acidez...";
+        searchHint.textContent = "La app mostrará categorías y medicamentos relacionados con fines educativos.";
+      } else {
+        searchLabel.textContent = "¿Qué medicamento querés consultar?";
+        input.placeholder = "Ej.: ibuprofeno, loratadina, amoxicilina...";
+        searchHint.textContent = "Buscá por nombre o categoría terapéutica.";
+      }
+    }
+  });
+});
+
+input.addEventListener("input", search);
+
+document.querySelectorAll(".navbtn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    ["homeView","directoryView","scannerView","alarmView","aboutView"].forEach(v=>document.getElementById(v).classList.add("hidden"));
+    document.getElementById(btn.dataset.view).classList.remove("hidden");
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
+
+
+const languageSelect = document.getElementById("languageSelect");
+const medicalAvatar = document.getElementById("medicalAvatar");
+
+const uiTranslations = {
+  "es": {
+    title:"DocMed",
+    subtitle:"Orientación farmacológica educativa — no prescribe ni diagnostica",
+    avatarTitle:"Avatar humano de DocMed",
+    avatarSubtitle:"Puede explicar en voz alta síntomas, medicamentos, beneficios, riesgos y señales de alarma.",
+    intro:"Hola. Soy el avatar médico educativo de DocMed. Puedo explicarte para qué se utilizan los medicamentos, qué síntomas o situaciones se relacionan con ellos, sus beneficios, riesgos y señales de alarma. Esta aplicación es educativa y no reemplaza a un profesional de la salud."
+  },
+  "en": {
+    title:"Student DocMed",
+    subtitle:"Educational pharmacology guidance — does not prescribe or diagnose",
+    avatarTitle:"Educational medical avatar",
+    avatarSubtitle:"Can read and explain symptoms, uses, benefits and risks aloud.",
+    intro:"Hello. I am the educational medical avatar of DocMed. I can explain what medicines are used for, related symptoms or situations, benefits, risks and warning signs. This application is educational and does not replace a healthcare professional."
+  },
+  "pt": {
+    title:"DocMed Estudantil",
+    subtitle:"Orientação farmacológica educativa — não prescreve nem diagnostica",
+    avatarTitle:"Avatar humano de DocMed",
+    avatarSubtitle:"Pode ler e explicar sintomas, usos, benefícios e riscos em voz alta.",
+    intro:"Olá. Sou o avatar médico educativo do DocMed. Posso explicar para que os medicamentos são usados, sintomas relacionados, benefícios, riscos e sinais de alerta. Este aplicativo é educativo e não substitui um profissional de saúde."
+  },
+  "fr": {
+    title:"DocMed Étudiant",
+    subtitle:"Orientation pharmacologique éducative — ne prescrit ni ne diagnostique",
+    avatarTitle:"Avatar médical éducatif",
+    avatarSubtitle:"Peut lire et expliquer à voix haute les symptômes, usages, bénéfices et risques.",
+    intro:"Bonjour. Je suis l'avatar médical éducatif de DocMed. Je peux expliquer l'utilisation des médicaments, les symptômes associés, leurs bénéfices, risques et signes d'alerte. Cette application est éducative et ne remplace pas un professionnel de santé."
+  },
+  "de": {
+    title:"DocMed für Studierende",
+    subtitle:"Pharmakologische Bildungsinformation — keine Diagnose oder Verschreibung",
+    avatarTitle:"Medizinischer Lern-Avatar",
+    avatarSubtitle:"Kann Symptome, Anwendungen, Vorteile und Risiken vorlesen und erklären.",
+    intro:"Hallo. Ich bin der medizinische Lern-Avatar von DocMed. Ich kann erklären, wofür Medikamente verwendet werden, welche Symptome damit zusammenhängen und welche Vorteile, Risiken und Warnzeichen wichtig sind. Diese Anwendung ersetzt keine medizinische Fachkraft."
+  },
+  "it": {
+    title:"FarmaGuida Studenti",
+    subtitle:"Orientamento farmacologico educativo — non prescrive né diagnostica",
+    avatarTitle:"Avatar medico educativo",
+    avatarSubtitle:"Può leggere e spiegare ad alta voce sintomi, usi, benefici e rischi.",
+    intro:"Ciao. Sono l'avatar medico educativo di FarmaGuida. Posso spiegare a cosa servono i farmaci, i sintomi correlati, benefici, rischi e segnali d'allarme. Questa applicazione è educativa e non sostituisce un professionista sanitario."
+  }
+};
+
+function selectedLang(){
+  const v = languageSelect.value;
+  if(v === "auto") return navigator.language || "es-ES";
+  return v;
+}
+
+function baseLang(){
+  return selectedLang().split("-")[0].toLowerCase();
+}
+
+function updateLanguageUI(){
+  const t = uiTranslations[baseLang()] || uiTranslations["en"];
+  document.querySelector("h1").textContent = t.title;
+  document.querySelector(".subtitle").textContent = t.subtitle;
+  document.getElementById("avatarTitle").textContent = t.avatarTitle;
+  document.getElementById("avatarSubtitle").textContent = t.avatarSubtitle;
+  document.documentElement.lang = selectedLang();
+  document.documentElement.dir = ["ar","he","fa","ur"].includes(baseLang()) ? "rtl" : "ltr";
+}
+
+function availableVoiceFor(lang){
+  const voices = speechSynthesis.getVoices();
+  return voices.find(v => v.lang.toLowerCase() === lang.toLowerCase()) ||
+         voices.find(v => v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase())) ||
+         null;
+}
+
+function speakText(text){
+  if(!("speechSynthesis" in window)){
+    alert("Este navegador no admite síntesis de voz.");
+    return;
+  }
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = selectedLang();
+  const voice = availableVoiceFor(utter.lang);
+  if(voice) utter.voice = voice;
+  utter.rate = 0.95;
+  utter.pitch = 1;
+  utter.onstart = () => medicalAvatar.classList.add("speaking");
+  utter.onend = () => medicalAvatar.classList.remove("speaking");
+  utter.onerror = () => medicalAvatar.classList.remove("speaking");
+  speechSynthesis.speak(utter);
+}
+
+function drugSpeechText(d){
+  // Drug database is currently authored in Spanish.
+  // For Spanish voices we read the full clinical summary.
+  // Other languages can still use the device voice for names and UI; full translated drug content
+  // can be added progressively to the multilingual data layer.
+  if(baseLang() === "es"){
+    return `${d.name}. Clasificación por efecto: ${d.category}. Qué controla: ${d.controls}. Situaciones o síntomas compatibles: ${d.symptoms.join(", ")}. Beneficios principales: ${d.pros.join(". ")}. Riesgos y efectos secundarios: ${d.cons.join(". ")}. Señal de alarma: ${d.alarm}. Recordá que esta explicación es educativa y no reemplaza una consulta médica.`;
+  }
+  return `${d.name}. ${d.category}. ${d.controls}`;
+}
+
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".speak-drug-btn");
+  if(!btn) return;
+  const drug = drugs.find(d => d.name === btn.dataset.drug);
+  if(drug) speakText(drugSpeechText(drug));
+});
+
+document.getElementById("speakIntroBtn").addEventListener("click",()=>{
+  const t = uiTranslations[baseLang()] || uiTranslations["en"];
+  speakText(t.intro);
+});
+document.getElementById("stopVoiceBtn").addEventListener("click",()=>{
+  if("speechSynthesis" in window) speechSynthesis.cancel();
+  medicalAvatar.classList.remove("speaking");
+});
+document.getElementById("voiceSettingsBtn").addEventListener("click",()=>{
+  const lang = selectedLang();
+  const voice = availableVoiceFor(lang);
+  const msg = voice
+    ? `Voz seleccionada: ${voice.name} (${voice.lang}).`
+    : `No se encontró una voz específica para ${lang}. El navegador intentará usar una voz disponible del dispositivo.`;
+  alert(msg);
+});
+languageSelect.addEventListener("change", updateLanguageUI);
+if("speechSynthesis" in window){
+  speechSynthesis.onvoiceschanged = ()=>{};
+}
+updateLanguageUI();
+
+
+
+const symptomCatalog = [
+  {
+    "name": "Dolor en el pecho",
+    "group": "Cardiovascular",
+    "urgent": true,
+    "terms": [
+      "dolor pecho",
+      "opresión torácica",
+      "dolor torácico"
+    ]
+  },
+  {
+    "name": "Dolor irradiado al brazo, cuello, mandíbula o espalda",
+    "group": "Cardiovascular",
+    "urgent": true,
+    "terms": [
+      "dolor brazo",
+      "dolor mandibula",
+      "dolor cuello",
+      "dolor espalda",
+      "dolor irradiado"
+    ]
+  },
+  {
+    "name": "Falta de aire",
+    "group": "Cardiovascular / Respiratorio",
+    "urgent": true,
+    "terms": [
+      "dificultad para respirar",
+      "disnea",
+      "ahogo"
+    ]
+  },
+  {
+    "name": "Retención de líquidos: hinchazón en tobillos, pies o piernas",
+    "group": "Cardiovascular / Renal",
+    "urgent": false,
+    "terms": [
+      "hinchazon tobillos",
+      "edema",
+      "piernas hinchadas",
+      "pies hinchados"
+    ]
+  },
+  {
+    "name": "Palpitaciones",
+    "group": "Cardiovascular",
+    "urgent": false,
+    "terms": [
+      "latidos rápidos",
+      "corazon acelerado",
+      "taquicardia"
+    ]
+  },
+  {
+    "name": "Mareos o desmayos",
+    "group": "Cardiovascular / Neurológico",
+    "urgent": true,
+    "terms": [
+      "mareo",
+      "desmayo",
+      "sincope"
+    ]
+  },
+  {
+    "name": "Sudoración fría y repentina",
+    "group": "Cardiovascular",
+    "urgent": true,
+    "terms": [
+      "sudor frio",
+      "sudoración repentina"
+    ]
+  },
+  {
+    "name": "Náuseas o malestar estomacal inexplicable",
+    "group": "Cardiovascular / Digestivo",
+    "urgent": false,
+    "terms": [
+      "nauseas",
+      "malestar estomacal"
+    ]
+  },
+  {
+    "name": "Piel fría, pálida o azulada en las extremidades",
+    "group": "Cardiovascular / Respiratorio",
+    "urgent": true,
+    "terms": [
+      "piel azulada",
+      "piel palida",
+      "extremidades frias",
+      "cianosis"
+    ]
+  },
+  {
+    "name": "Fatiga inusual al realizar esfuerzos mínimos",
+    "group": "Cardiovascular",
+    "urgent": false,
+    "terms": [
+      "fatiga esfuerzo",
+      "cansancio al caminar",
+      "falta de energia"
+    ]
+  },
+  {
+    "name": "Necesidad frecuente de orinar (poliuria)",
+    "group": "Metabólico / Diabetes",
+    "urgent": false,
+    "terms": [
+      "poliuria",
+      "orinar mucho",
+      "orinar frecuente"
+    ]
+  },
+  {
+    "name": "Sed constante y excesiva (polidipsia)",
+    "group": "Metabólico / Diabetes",
+    "urgent": false,
+    "terms": [
+      "polidipsia",
+      "mucha sed",
+      "sed excesiva"
+    ]
+  },
+  {
+    "name": "Mucha hambre o apetito aumentado (polifagia)",
+    "group": "Metabólico / Diabetes",
+    "urgent": false,
+    "terms": [
+      "polifagia",
+      "mucha hambre",
+      "apetito aumentado"
+    ]
+  },
+  {
+    "name": "Pérdida de peso drástica y repentina",
+    "group": "Metabólico / Diabetes",
+    "urgent": false,
+    "terms": [
+      "perdida de peso",
+      "bajar de peso sin razon"
+    ]
+  },
+  {
+    "name": "Fatiga extrema y falta de energía",
+    "group": "Metabólico / General",
+    "urgent": false,
+    "terms": [
+      "fatiga extrema",
+      "cansancio extremo",
+      "sin energia"
+    ]
+  },
+  {
+    "name": "Visión borrosa",
+    "group": "Metabólico / Neurológico",
+    "urgent": false,
+    "terms": [
+      "vision borrosa",
+      "ver borroso"
+    ]
+  },
+  {
+    "name": "Mala cicatrización en cortes o raspaduras",
+    "group": "Metabólico / Diabetes",
+    "urgent": false,
+    "terms": [
+      "mala cicatrizacion",
+      "heridas que no curan"
+    ]
+  },
+  {
+    "name": "Hormigueo o adormecimiento en manos y pies",
+    "group": "Neurológico / Metabólico",
+    "urgent": false,
+    "terms": [
+      "hormigueo",
+      "adormecimiento",
+      "manos dormidas",
+      "pies dormidos"
+    ]
+  },
+  {
+    "name": "Infecciones frecuentes en piel, encías o vías urinarias",
+    "group": "Metabólico / Infeccioso",
+    "urgent": false,
+    "terms": [
+      "infecciones frecuentes",
+      "infeccion urinaria",
+      "infeccion piel",
+      "encias"
+    ]
+  },
+  {
+    "name": "Aliento con olor a fruta o manzana",
+    "group": "Metabólico / Diabetes",
+    "urgent": true,
+    "terms": [
+      "aliento frutal",
+      "olor a manzana",
+      "olor a fruta"
+    ]
+  },
+  {
+    "name": "Piel extremadamente seca o manchas oscuras en cuello y axilas",
+    "group": "Metabólico / Dermatológico",
+    "urgent": false,
+    "terms": [
+      "piel seca",
+      "manchas cuello",
+      "manchas axilas"
+    ]
+  },
+  {
+    "name": "Estado de ánimo deprimido o tristeza profunda",
+    "group": "Salud mental",
+    "urgent": false,
+    "terms": [
+      "depresion",
+      "tristeza",
+      "estado de animo deprimido"
+    ]
+  },
+  {
+    "name": "Pérdida de interés o placer (anhedonia)",
+    "group": "Salud mental",
+    "urgent": false,
+    "terms": [
+      "anhedonia",
+      "sin interes",
+      "sin placer"
+    ]
+  },
+  {
+    "name": "Ansiedad intensa o ataques de pánico",
+    "group": "Salud mental",
+    "urgent": false,
+    "terms": [
+      "ansiedad",
+      "ataque de panico",
+      "panico"
+    ]
+  },
+  {
+    "name": "Insomnio o sueño excesivo",
+    "group": "Salud mental / Sueño",
+    "urgent": false,
+    "terms": [
+      "insomnio",
+      "dormir mucho",
+      "sueño excesivo"
+    ]
+  },
+  {
+    "name": "Pensamientos alterados: delirios o alucinaciones",
+    "group": "Salud mental / Neurológico",
+    "urgent": true,
+    "terms": [
+      "delirios",
+      "alucinaciones",
+      "escuchar voces",
+      "ver cosas"
+    ]
+  },
+  {
+    "name": "Cambios drásticos de conducta o aislamiento",
+    "group": "Salud mental",
+    "urgent": false,
+    "terms": [
+      "cambio de conducta",
+      "aislamiento",
+      "conducta extraña"
+    ]
+  },
+  {
+    "name": "Sentimientos constantes de inutilidad o culpa excesiva",
+    "group": "Salud mental",
+    "urgent": false,
+    "terms": [
+      "inutilidad",
+      "culpa excesiva",
+      "culpa"
+    ]
+  },
+  {
+    "name": "Dificultad severa para concentrarse o tomar decisiones",
+    "group": "Salud mental / Neurológico",
+    "urgent": false,
+    "terms": [
+      "dificultad para concentrarse",
+      "problemas de concentracion",
+      "no puedo decidir"
+    ]
+  },
+  {
+    "name": "Temblores involuntarios o rigidez muscular",
+    "group": "Neurológico",
+    "urgent": false,
+    "terms": [
+      "temblores",
+      "rigidez muscular"
+    ]
+  },
+  {
+    "name": "Pérdida de memoria a corto plazo o confusión mental",
+    "group": "Neurológico",
+    "urgent": true,
+    "terms": [
+      "perdida de memoria",
+      "confusion",
+      "desorientacion"
+    ]
+  },
+  {
+    "name": "Fiebre",
+    "group": "Infeccioso / General",
+    "urgent": false,
+    "terms": [
+      "fiebre",
+      "temperatura alta"
+    ]
+  },
+  {
+    "name": "Dolor localizado o general en músculos, articulaciones o cabeza",
+    "group": "Dolor / Inflamación",
+    "urgent": false,
+    "terms": [
+      "dolor muscular",
+      "dolor articular",
+      "dolor de cabeza",
+      "dolor general"
+    ]
+  },
+  {
+    "name": "Inflamación visible: zona enrojecida, caliente o hinchada",
+    "group": "Inflamación / Infeccioso",
+    "urgent": false,
+    "terms": [
+      "inflamacion",
+      "enrojecimiento",
+      "zona caliente",
+      "hinchazon"
+    ]
+  },
+  {
+    "name": "Tos y congestión nasal o pulmonar",
+    "group": "Respiratorio / Infeccioso",
+    "urgent": false,
+    "terms": [
+      "tos",
+      "congestion",
+      "mocos",
+      "congestion pulmonar"
+    ]
+  },
+  {
+    "name": "Escalofríos y sudoración nocturna",
+    "group": "Infeccioso / General",
+    "urgent": false,
+    "terms": [
+      "escalofrios",
+      "sudoracion nocturna"
+    ]
+  },
+  {
+    "name": "Pérdida repentina del apetito",
+    "group": "General / Digestivo",
+    "urgent": false,
+    "terms": [
+      "sin apetito",
+      "perdida apetito"
+    ]
+  },
+  {
+    "name": "Ganglios linfáticos inflamados o dolorosos",
+    "group": "Infeccioso / Inmunológico",
+    "urgent": false,
+    "terms": [
+      "ganglios",
+      "ganglios inflamados",
+      "ganglios dolorosos"
+    ]
+  },
+  {
+    "name": "Dificultad o dolor al tragar alimentos o líquidos",
+    "group": "ORL / Digestivo",
+    "urgent": false,
+    "terms": [
+      "dolor al tragar",
+      "dificultad al tragar",
+      "disfagia",
+      "odinofagia"
+    ]
+  }
+];
+let symptomGroupFilter = "Todos";
+
+function symptomNorm(s){
+  return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
+function renderSymptomFilters(){
+  const groups = ["Todos", ...new Set(symptomCatalog.map(s=>s.group))];
+  const host = document.getElementById("symptomFilters");
+  host.innerHTML = groups.map(g=>`<button class="filter-chip ${g===symptomGroupFilter?'active':''}" data-group="${g}">${g}</button>`).join("");
+  host.querySelectorAll(".filter-chip").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      symptomGroupFilter = btn.dataset.group;
+      
+const toggleSymptomBrowser = document.getElementById("toggleSymptomBrowser");
+const symptomBrowserContent = document.getElementById("symptomBrowserContent");
+toggleSymptomBrowser.addEventListener("click",()=>{
+  const willShow = symptomBrowserContent.classList.contains("hidden");
+  symptomBrowserContent.classList.toggle("hidden");
+  toggleSymptomBrowser.textContent = willShow ? "Ocultar" : "Mostrar";
+});
+
+renderSymptomFilters();
+      renderSymptomCatalog();
+    });
+  });
+}
+
+function renderSymptomCatalog(){
+  const q = symptomNorm(document.getElementById("symptomCatalogSearch").value);
+  const list = symptomCatalog.filter(s=>{
+    const matchesGroup = symptomGroupFilter==="Todos" || s.group===symptomGroupFilter;
+    const hay = symptomNorm([s.name,s.group,...s.terms].join(" "));
+    return matchesGroup && (!q || hay.includes(q));
+  });
+  const host = document.getElementById("symptomCatalogList");
+  host.innerHTML = list.length ? list.map((s,i)=>`
+    <div class="symptom-item" data-name="${s.name.replace(/"/g,'&quot;')}">
+      <div><b>${s.name}</b><small>${s.group}</small></div>
+      ${s.urgent?'<span class="urgent-pill">ALARMA</span>':''}
+    </div>`).join("") : `<div class="empty">No se encontraron síntomas con ese criterio.</div>`;
+  host.querySelectorAll(".symptom-item").forEach(el=>el.addEventListener("click",()=>selectCatalogSymptom(el.dataset.name)));
+}
+
+function relatedDrugsForSymptom(symptom){
+  const queryTerms = [symptom.name, ...symptom.terms].map(symptomNorm);
+  return drugs.filter(d=>{
+    const hay = symptomNorm([d.category,d.controls,...d.symptoms].join(" "));
+    return queryTerms.some(t => t && (hay.includes(t) || t.split(" ").some(w=>w.length>4 && hay.includes(w))));
+  });
+}
+
+function selectCatalogSymptom(name){
+  const s = symptomCatalog.find(x=>x.name===name);
+  if(!s) return;
+  const box = document.getElementById("selectedSymptomSummary");
+  box.classList.remove("hidden","urgent");
+  if(s.urgent){
+    box.classList.add("urgent");
+    box.innerHTML = `<b>🚨 Síntoma de alarma seleccionado:</b> ${s.name}.<br><br>Este síntoma puede asociarse a cuadros que requieren evaluación profesional urgente. La app no debe sugerir medicación como primera respuesta. Si es intenso, repentino, empeora o se acompaña de dificultad para respirar, pérdida de conciencia, debilidad súbita o coloración azulada, buscá atención médica inmediata.`;
+    results.innerHTML = "";
+  } else {
+    box.innerHTML = `<b>Síntoma seleccionado:</b> ${s.name}<br><span class="meta">${s.group}</span>`;
+    const related = relatedDrugsForSymptom(s);
+    if(related.length) show(related);
+    else results.innerHTML = `<div class="panel empty">No hay una relación farmacológica directa y segura precargada para este síntoma. Puede requerir diagnóstico antes de considerar medicamentos.</div>`;
+  }
+  if("speechSynthesis" in window){
+    const text = s.urgent
+      ? `Atención. ${s.name} está marcado como síntoma de alarma. Esta aplicación no recomienda automedicación ante este síntoma.`
+      : `Síntoma seleccionado: ${s.name}. Categoría: ${s.group}.`;
+    speakText(text);
+  }
+}
+
+document.getElementById("symptomCatalogSearch").addEventListener("input",renderSymptomCatalog);
+document.getElementById("clearSymptomSearch").addEventListener("click",()=>{
+  document.getElementById("symptomCatalogSearch").value="";
+  symptomGroupFilter="Todos";
+  renderSymptomFilters();
+  renderSymptomCatalog();
+  document.getElementById("selectedSymptomSummary").classList.add("hidden");
+});
+renderSymptomFilters();
+renderSymptomCatalog();
+
+
+
+// ===== Escáner DocMed =====
+let scanType = "Receta";
+let currentScanDataUrl = "";
+
+document.querySelectorAll(".scan-type").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".scan-type").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    scanType = btn.dataset.scanType;
+    document.getElementById("scanResultText").textContent =
+      `Modo ${scanType} seleccionado. Cargá o capturá una imagen.`;
+  });
+});
+
+document.getElementById("scanInput").addEventListener("change", async (e)=>{
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    currentScanDataUrl = reader.result;
+    document.getElementById("scanImage").src = currentScanDataUrl;
+    document.getElementById("scanPreview").classList.remove("hidden");
+    document.getElementById("scanResultText").textContent =
+      `Imagen cargada como ${scanType}. Tocá “Analizar”.`;
+  };
+  reader.readAsDataURL(file);
+});
+
+async function tryBarcodeDetection(img){
+  if(!("BarcodeDetector" in window)) return [];
+  try{
+    const supported = await BarcodeDetector.getSupportedFormats();
+    const formats = supported.filter(x=>["ean_13","ean_8","upc_a","upc_e","code_128","qr_code","data_matrix"].includes(x));
+    const detector = new BarcodeDetector({formats: formats.length ? formats : undefined});
+    return await detector.detect(img);
+  }catch(e){ return []; }
+}
+
+document.getElementById("analyzeScanBtn").addEventListener("click", async ()=>{
+  if(!currentScanDataUrl){
+    document.getElementById("scanResultText").textContent = "Primero cargá o capturá una imagen.";
+    return;
+  }
+  const result = document.getElementById("scanResultText");
+  if(scanType === "Medicamento"){
+    result.textContent = "Analizando códigos visibles...";
+    const codes = await tryBarcodeDetection(document.getElementById("scanImage"));
+    if(codes.length){
+      result.innerHTML = `<b>Código detectado:</b> ${codes.map(c=>c.rawValue).join(", ")}.<br>
+      <span class="hint">El código identifica el envase, pero no confirma por sí solo principio activo, dosis ni indicación clínica.</span>`;
+    }else{
+      result.innerHTML = `<b>Imagen de medicamento preparada.</b><br>
+      No se detectó automáticamente un código compatible. Usá “Datos visibles / notas” para registrar nombre, principio activo, concentración y presentación.`;
+    }
+  }else if(scanType === "Receta"){
+    result.innerHTML = `<b>Receta capturada.</b><br>
+    Esta versión local no realiza OCR clínico automático. Registrá manualmente los campos visibles: medicamento, concentración, forma farmacéutica, indicación escrita, profesional y fecha.`;
+  }else{
+    result.innerHTML = `<b>Ticket/factura capturado.</b><br>
+    Esta versión local no extrae automáticamente importes. Podés registrar farmacia/comercio, fecha, productos, total y número de comprobante en las notas.`;
+  }
+});
+
+document.getElementById("clearScanBtn").addEventListener("click",()=>{
+  currentScanDataUrl = "";
+  document.getElementById("scanInput").value = "";
+  document.getElementById("scanImage").removeAttribute("src");
+  document.getElementById("scanPreview").classList.add("hidden");
+  document.getElementById("scanNotes").value = "";
+  document.getElementById("scanResultText").textContent = "Listo para una nueva captura.";
+});
+
+function getScanHistory(){
+  try { return JSON.parse(localStorage.getItem("docmed_scan_history") || "[]"); }
+  catch(e){ return []; }
+}
+function renderScanHistory(){
+  const host = document.getElementById("scanHistory");
+  const items = getScanHistory();
+  if(!items.length){
+    host.innerHTML = '<div class="empty">No hay escaneos guardados.</div>';
+    return;
+  }
+  host.innerHTML = items.map((x,i)=>`
+    <div class="scan-history-item">
+      <b>${x.type}</b><br>
+      <small>${x.date}</small>
+      <div style="margin-top:6px">${x.notes ? x.notes.replace(/</g,"&lt;").replace(/>/g,"&gt;") : "<span class='hint'>Sin notas</span>"}</div>
+    </div>`).join("");
+}
+document.getElementById("saveScanBtn").addEventListener("click",()=>{
+  if(!currentScanDataUrl && !document.getElementById("scanNotes").value.trim()){
+    alert("Cargá una imagen o escribí una nota antes de guardar.");
+    return;
+  }
+  const items = getScanHistory();
+  items.unshift({
+    type:scanType,
+    date:new Date().toLocaleString(),
+    notes:document.getElementById("scanNotes").value.trim()
+  });
+  localStorage.setItem("docmed_scan_history", JSON.stringify(items.slice(0,50)));
+  renderScanHistory();
+  alert("Escaneo registrado localmente en este dispositivo.");
+});
+document.getElementById("clearHistoryBtn").addEventListener("click",()=>{
+  if(confirm("¿Eliminar todo el historial local de escaneos?")){
+    localStorage.removeItem("docmed_scan_history");
+    renderScanHistory();
+  }
+});
+renderScanHistory();
+
+
+// ===== Búsqueda por voz =====
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let voiceRecognizer = null;
+const voiceSearchBtn = document.getElementById("voiceSearchBtn");
+
+if(SpeechRecognitionAPI){
+  voiceRecognizer = new SpeechRecognitionAPI();
+  voiceRecognizer.lang = navigator.language || "es-AR";
+  voiceRecognizer.interimResults = false;
+  voiceRecognizer.maxAlternatives = 1;
+
+  voiceRecognizer.onstart = ()=> voiceSearchBtn.classList.add("listening");
+  voiceRecognizer.onend = ()=> voiceSearchBtn.classList.remove("listening");
+  voiceRecognizer.onerror = ()=> voiceSearchBtn.classList.remove("listening");
+  voiceRecognizer.onresult = (event)=>{
+    const transcript = event.results[0][0].transcript || "";
+    input.value = transcript;
+    mode = "symptom";
+    document.querySelectorAll(".mode-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode==="symptom"));
+    searchPanel.classList.remove("hidden");
+    categoryPanel.classList.add("hidden");
+    search();
+    speakText(`Buscando: ${transcript}`);
+  };
+
+  voiceSearchBtn.addEventListener("click", ()=>{
+    try{
+      voiceRecognizer.lang = selectedLang() === "auto" ? (navigator.language || "es-AR") : selectedLang();
+      voiceRecognizer.start();
+    }catch(e){}
+  });
+}else{
+  voiceSearchBtn.addEventListener("click", ()=>{
+    alert("La búsqueda por voz no está disponible en este navegador. Probá Chrome o Edge en un dispositivo compatible.");
+  });
+}
+
+
+// ===== Directorio Argentina =====
+const argProvinces = [
+  "Todas","Buenos Aires","Ciudad Autónoma de Buenos Aires","Catamarca","Chaco","Chubut",
+  "Córdoba","Corrientes","Entre Ríos","Formosa","Jujuy","La Pampa","La Rioja","Mendoza",
+  "Misiones","Neuquén","Río Negro","Salta","San Juan","San Luis","Santa Cruz","Santa Fe",
+  "Santiago del Estero","Tierra del Fuego","Tucumán"
+];
+
+const directoryEntries = [
+  {type:"clinic",province:"Buenos Aires",city:"El Palomar",name:"Hospital Nacional Profesor Alejandro Posadas",note:"Establecimiento nacional de alta complejidad."},
+  {type:"clinic",province:"Ciudad Autónoma de Buenos Aires",city:"CABA",name:"Hospital de Pediatría Prof. Dr. Juan P. Garrahan",note:"Hospital pediátrico nacional."},
+  {type:"clinic",province:"Buenos Aires",city:"Florencio Varela",name:"Hospital El Cruce Dr. Néstor C. Kirchner",note:"Hospital de alta complejidad en red."},
+  {type:"clinic",province:"Buenos Aires",city:"General Rodríguez",name:"Hospital Nacional Dr. Baldomero Sommer",note:"Hospital nacional."},
+  {type:"clinic",province:"Buenos Aires",city:"Mar del Plata",name:"Instituto Nacional de Rehabilitación Psicofísica del Sur",note:"Institución nacional de rehabilitación."},
+  {type:"clinic",province:"Santa Cruz",city:"El Calafate",name:"Hospital de Alta Complejidad El Calafate",note:"Establecimiento de alta complejidad."},
+  {type:"clinic",province:"Buenos Aires",city:"Cañuelas",name:"Hospital Cuenca Alta Néstor Kirchner",note:"Hospital de alta complejidad."},
+
+  {type:"pharmacy",province:"Ciudad Autónoma de Buenos Aires",city:"Liniers",name:"Gran Farmacia Liniers",note:"Rivadavia 11552. Figura en el buscador público de farmacias de Buenos Aires Ciudad."},
+  {type:"pharmacy",province:"Ciudad Autónoma de Buenos Aires",city:"Belgrano",name:"Danesa",note:"Cabildo 2171. Figura en el buscador público de farmacias de Buenos Aires Ciudad."},
+  {type:"pharmacy",province:"Ciudad Autónoma de Buenos Aires",city:"Recoleta",name:"Gastoni",note:"Callao 1289. Figura en el buscador público de farmacias de Buenos Aires Ciudad."},
+  {type:"pharmacy",province:"Ciudad Autónoma de Buenos Aires",city:"Caballito",name:"Caballito",note:"Rivadavia 5014. Figura en el buscador público de farmacias de Buenos Aires Ciudad."}
+];
+
+let directoryType = "pharmacy";
+
+const provinceSelect = document.getElementById("provinceSelect");
+provinceSelect.innerHTML = argProvinces.map(p=>`<option value="${p}">${p}</option>`).join("");
+
+function renderDirectory(){
+  const province = provinceSelect.value;
+  const q = norm(document.getElementById("directorySearch").value);
+  const items = directoryEntries.filter(x =>
+    x.type === directoryType &&
+    (province === "Todas" || x.province === province) &&
+    (!q || norm(`${x.name} ${x.city} ${x.province} ${x.note}`).includes(q))
+  );
+  const host = document.getElementById("directoryList");
+  if(!items.length){
+    host.innerHTML = `<div class="empty">
+      No hay ejemplos precargados para este filtro. Para un listado exhaustivo y vigente,
+      consultá REFAR (farmacias) o REFES (establecimientos de salud) desde los enlaces oficiales.
+    </div>`;
+    return;
+  }
+  host.innerHTML = items.map(x=>`
+    <div class="directory-card">
+      <b>${x.type==="pharmacy"?"💊":"🏥"} ${x.name}</b>
+      <small>${x.city} — ${x.province}</small>
+      <div style="margin-top:6px;font-size:.88rem">${x.note}</div>
+    </div>
+  `).join("");
+}
+
+document.querySelectorAll(".directory-tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".directory-tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    directoryType = btn.dataset.directory;
+    renderDirectory();
+  });
+});
+provinceSelect.addEventListener("change",renderDirectory);
+document.getElementById("directorySearch").addEventListener("input",renderDirectory);
+renderDirectory();
+
+renderCategories();
+</script>
+</body>
+</html>
